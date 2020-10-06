@@ -1,39 +1,31 @@
 package org.totschnig.ocr
 
-import android.app.Activity
 import android.content.Intent
-import android.graphics.BitmapFactory
-import android.graphics.ImageDecoder
 import android.os.Bundle
-import android.provider.MediaStore
 import android.widget.Toast
-import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.text.TextRecognition
-import timber.log.Timber
+import androidx.activity.ComponentActivity
+import androidx.lifecycle.ViewModelProvider
 
-class OCR : Activity() {
+
+class OCR : ComponentActivity() {
+    lateinit var viewModel: OcrViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(OcrViewModel::class.java)
+        viewModel.getResult().observe(this) { result ->
+            result.onSuccess {
+                setResult(RESULT_OK, Intent().apply {
+                    putExtra("result", it)
+                })
+                finish()
+            }.onFailure {
+                abort(it.message ?: "Failure")
+            }
+        }
         if (intent.action == "org.totschnig.ocr.action.RECOGNIZE") {
             setContentView(R.layout.activity_main)
             intent.data?.let { uri ->
-                contentResolver.openInputStream(uri)?.use { inputStream ->
-                    BitmapFactory.decodeStream(inputStream)
-                }?.let {
-                    InputImage.fromBitmap(it, intent.getIntExtra("orientation", 0))
-                }
-            }?.let {
-                TextRecognition.getClient().process(it)
-                    .addOnSuccessListener { texts ->
-                        setResult(RESULT_OK, Intent().apply {
-                            putExtra("result", texts.wrap())
-                        })
-                        finish()
-                    }
-                    .addOnFailureListener { e ->
-                        Timber.e(e)
-                        abort(e.message ?: "Failure")
-                    }
+                viewModel.runTextRecognition(uri, intent.getIntExtra("orientation", 0))
             } ?: kotlin.run {
                 abort("No uri to process provided")
             }
@@ -51,12 +43,3 @@ class OCR : Activity() {
         finish()
     }
 }
-
-
-fun com.google.mlkit.vision.text.Text.wrap() = Text(textBlocks.map { textBlock ->
-    TextBlock(textBlock.lines.map { line ->
-        Line(line.text, line.boundingBox, line.elements.map { element ->
-            Element(element.text, element.boundingBox)
-        })
-    })
-})
