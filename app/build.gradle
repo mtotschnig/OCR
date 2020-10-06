@@ -2,6 +2,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+def getPropertyIfDefined(property, defaultValue) {
+    if (project.hasProperty(property)) {
+        return project.properties[property]
+    }
+    return defaultValue
+}
+
 android {
     compileSdkVersion 29
 
@@ -15,9 +22,20 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+    release {
+        storeFile file(getPropertyIfDefined("RELEASE_STORE_FILE", "unknown"))
+        storePassword getPropertyIfDefined("RELEASE_STORE_PASSWORD", "unknown")
+        keyAlias getPropertyIfDefined("RELEASE_KEY_ALIAS", "unknown")
+        keyPassword getPropertyIfDefined("RELEASE_KEY_PASSWORD", "unknown")
+
+    }
+}
+
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
