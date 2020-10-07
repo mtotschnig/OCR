@@ -5,7 +5,7 @@ At the moment it does not provide a UI on its own, but can be called by other ap
 
 It listens for Intents with action "org.totschnig.ocr.action.RECOGNIZE" and expects an Uri pointing to a JPEG file as data. The orientation of the image can be passed in with an Integer extra "orientation". Value must be either 0, 90, 180 or 270.
 
-The recognized text is passed in the extra "result" as an object of class [Text](https://github.com/mtotschnig/MyExpenses/blob/master/ocr/src/main/java/org/totschnig/ocr/Text.kt), that must be copied into the client app: 
+The recognized text is passed back in the extra "result" as an object of class [Text](https://github.com/mtotschnig/MyExpenses/blob/master/ocr/src/main/java/org/totschnig/ocr/Text.kt), that must be copied into the client app: 
 
 See MyExpenses for an example:
 
