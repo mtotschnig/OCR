@@ -10,4 +10,4 @@ The recognized text is passed back in the extra "result" as an object of class [
 See MyExpenses for an example:
 
 Activity is started [here](https://github.com/mtotschnig/MyExpenses/blob/0d6e8c1aad8dc60444aa940d571233885b698cf2/ocr/src/main/java/org/totschnig/ocr/ScanPreviewViewModel.kt#L82).
-The resuls is processed [here](https://github.com/mtotschnig/MyExpenses/blob/0d6e8c1aad8dc60444aa940d571233885b698cf2/ocr/src/main/java/org/totschnig/ocr/AbstractOcrFeatureImpl.kt#L63)
+The result is processed [here](https://github.com/mtotschnig/MyExpenses/blob/0d6e8c1aad8dc60444aa940d571233885b698cf2/ocr/src/main/java/org/totschnig/ocr/AbstractOcrFeatureImpl.kt#L63).
