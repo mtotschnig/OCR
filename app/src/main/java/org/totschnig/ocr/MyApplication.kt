@@ -8,8 +8,8 @@ import timber.log.Timber.DebugTree
 class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        Timber.plant(DebugTree())
         if (BuildConfig.DEBUG) {
+            Timber.plant(DebugTree())
             StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
                 .detectAll()
                 .penaltyLog()

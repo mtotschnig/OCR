@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">OCR (Tesseract)</string>
+    <string name="pref_tesseract_language_title">Language</string>
+</resources>

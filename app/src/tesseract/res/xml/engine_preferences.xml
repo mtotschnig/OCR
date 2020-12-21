@@ -1,0 +1,8 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        app:useSimpleSummaryProvider="true"
+        android:entryValues="@array/pref_tesseract_language_values"
+        android:key="tesseract_language"
+        android:title="@string/pref_tesseract_language_title" />
+</PreferenceScreen>

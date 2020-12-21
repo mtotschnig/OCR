@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:title="Visite project on Github">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://github.com/mtotschnig/OCR" />
+    </Preference>
+    <Preference
+        android:key="test"
+        android:title="Test" />
+</PreferenceScreen>
