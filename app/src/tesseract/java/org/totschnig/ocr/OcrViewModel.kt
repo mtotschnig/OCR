@@ -40,8 +40,12 @@ class OcrViewModel(application: Application) : BaseViewModel(application) {
         viewModelScope.launch {
             withContext(Dispatchers.Default) {
                 try {
+                    val application = getApplication<Application>()
+                    if (!tessDataExists(application)) {
+                        throw IllegalStateException(application.getString(R.string.configuration_pending))
+                    }
                     initialize()
-                    getApplication<Application>().contentResolver.openInputStream(uri)
+                    application.contentResolver.openInputStream(uri)
                         ?.use { inputStream ->
                             BitmapFactory.decodeStream(
                                 inputStream,
@@ -54,7 +58,7 @@ class OcrViewModel(application: Application) : BaseViewModel(application) {
                             with(TessBaseAPI()) {
                                 if (!init(
                                         File(
-                                            getApplication<Application>().getExternalFilesDir(null),
+                                            application.getExternalFilesDir(null),
                                             TESSERACT_DOWNLOAD_FOLDER
                                         ).path, language()
                                     )
