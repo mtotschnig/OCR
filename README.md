@@ -1,7 +1,6 @@
 # OCR
 
-This app bundles OCR functionality from Google's [Mlkit](https://developers.google.com/ml-kit/vision/text-recognition/android).
-At the moment it does not provide a UI on its own, but can be called by other apps.
+This app bundles OCR functionality and can be called from other apps via Intents. Depending on the product flavor, it either uses [Mlkit](https://developers.google.com/ml-kit/vision/text-recognition/android) or [Tesseract](https://tesseract-ocr.github.io/).
 
 It listens for Intents with action "org.totschnig.ocr.action.RECOGNIZE" and expects an Uri pointing to a JPEG file as data. The orientation of the image can be passed in with an Integer extra "orientation". Value must be either 0, 90, 180 or 270.
 
