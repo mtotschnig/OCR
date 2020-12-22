@@ -1,3 +1,5 @@
-This app bundles OCR functionality (based on Tesseract) that can be called from other apps via Intents.
+This app bundles OCR functionality (based on Tesseract) that can be called from other apps via Intents. It listens for Intents with action "org.totschnig.ocr.action.RECOGNIZE" and expects an Uri pointing to a JPEG file as data. The recognized text is passed back in the extra "result" as an object of a parcelable data class Text, that must be copied into the client app.
 
-It listens for Intents with action "org.totschnig.ocr.action.RECOGNIZE" and expects an Uri pointing to a JPEG file as data.
+This app is not intended to be useful stand-alone. It was created out of the motivation to not blow up the size of an application that makes use OCR for a feature that is not needed by all users. Currently it is used by My Expenses for scanning receipts.
+
+Before you start using it, you need to configure the language that Tesseract should use, which triggers the download of the necessary trained models, hence the need for INTERNET permission.
