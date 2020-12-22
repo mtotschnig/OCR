@@ -1,6 +1,6 @@
 # OCR
 
-This app bundles OCR functionality and can be called from other apps via Intents. Depending on the product flavor, it either uses [Mlkit](https://developers.google.com/ml-kit/vision/text-recognition/android) or [Tesseract](https://tesseract-ocr.github.io/).
+This app bundles OCR functionality that can be called from other apps via Intents. Depending on the product flavor, it either uses [Mlkit](https://developers.google.com/ml-kit/vision/text-recognition/android) or [Tesseract](https://tesseract-ocr.github.io/).
 
 It listens for Intents with action "org.totschnig.ocr.action.RECOGNIZE" and expects an Uri pointing to a JPEG file as data.
 

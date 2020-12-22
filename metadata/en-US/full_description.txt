@@ -1,0 +1,3 @@
+This app bundles OCR functionality (based on Tesseract) that can be called from other apps via Intents.
+
+It listens for Intents with action "org.totschnig.ocr.action.RECOGNIZE" and expects an Uri pointing to a JPEG file as data.

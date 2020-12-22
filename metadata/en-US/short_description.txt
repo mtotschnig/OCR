@@ -1,0 +1,1 @@
+Optical character recognition (OCR) functionality based on Tesseract via Intents
