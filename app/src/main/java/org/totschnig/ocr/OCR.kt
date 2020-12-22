@@ -25,7 +25,7 @@ class OCR : ComponentActivity() {
         if (intent.action == "org.totschnig.ocr.action.RECOGNIZE") {
             setContentView(R.layout.activity_main)
             intent.data?.let { uri ->
-                viewModel.runTextRecognition(uri, intent.getIntExtra("orientation", 0))
+                viewModel.runTextRecognition(uri)
             } ?: kotlin.run {
                 abort("No uri to process provided")
             }

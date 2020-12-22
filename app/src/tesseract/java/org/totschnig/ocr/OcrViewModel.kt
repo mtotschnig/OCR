@@ -9,11 +9,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.net.Uri
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import com.googlecode.tesseract.android.TessBaseAPI
@@ -25,8 +24,7 @@ import java.util.*
 
 const val TESSERACT_DOWNLOAD_FOLDER = "tesseract4/fast/"
 
-class OcrViewModel(application: Application) : AndroidViewModel(application) {
-    private val result = MutableLiveData<Result<Text>>()
+class OcrViewModel(application: Application) : BaseViewModel(application) {
 
     val preferences: SharedPreferences
         get() = PreferenceManager.getDefaultSharedPreferences(getApplication())
@@ -38,9 +36,7 @@ class OcrViewModel(application: Application) : AndroidViewModel(application) {
         System.loadLibrary("tesseract")
     }
 
-    fun getResult(): LiveData<Result<Text>> = result
-
-    fun runTextRecognition(uri: Uri, orientation: Int) {
+    fun runTextRecognition(uri: Uri) {
         viewModelScope.launch {
             withContext(Dispatchers.Default) {
                 try {
@@ -74,7 +70,7 @@ class OcrViewModel(application: Application) : AndroidViewModel(application) {
                                 setVariable("load_bigram_dawg", TessBaseAPI.VAR_FALSE)
                                 setVariable("load_fixed_length_dawgs", TessBaseAPI.VAR_FALSE)
                                 pageSegMode = TessBaseAPI.PageSegMode.PSM_AUTO_OSD
-                                setImage(with(FastBitmap(it)) {
+                                setImage(with(FastBitmap(it.rotate(getOrientation(uri)))) {
                                     toGrayscale()
                                     val g: IApplyInPlace = BradleyLocalThreshold()
                                     g.applyInPlace(this)
@@ -117,6 +113,9 @@ class OcrViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
+
+    fun Bitmap.rotate(degrees: Int) =
+        if (degrees == 0) this else Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply { postRotate(degrees.toFloat()) }, true)
 
     private fun filePath(language: String) =
         "${TESSERACT_DOWNLOAD_FOLDER}tessdata/${language}.traineddata"

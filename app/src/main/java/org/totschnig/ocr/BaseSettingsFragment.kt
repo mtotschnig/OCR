@@ -34,7 +34,7 @@ abstract class BaseSettingsFragment : PreferenceFragmentCompat() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == TEST_RC && resultCode == Activity.RESULT_OK) {
-            data?.data?.let { viewModel.runTextRecognition(it, 0) }
+            data?.data?.let { viewModel.runTextRecognition(it) }
         }
     }
 
