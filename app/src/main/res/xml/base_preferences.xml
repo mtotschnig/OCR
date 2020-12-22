@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <Preference
-        android:title="Visite project on Github">
+        android:key="website"
+        android:title="@string/pref_website_title">
         <intent
             android:action="android.intent.action.VIEW"
             android:data="https://github.com/mtotschnig/OCR" />
@@ -9,4 +10,15 @@
     <Preference
         android:key="test"
         android:title="Test" />
+    <PreferenceScreen
+        android:key="credits"
+        android:title="@string/pref_credits_title">
+        <Preference
+            android:title="Timber"
+            android:summary="Apache License, Version 2.0">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/JakeWharton/timber" />
+        </Preference>
+    </PreferenceScreen>
 </PreferenceScreen>

@@ -24,7 +24,13 @@ class SettingsFragment: BaseSettingsFragment(),
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
-        addPreferencesFromResource(R.xml.engine_preferences)
-        findPreference<ListPreference>("tesseract_language")?.setEntries(viewModel.getLanguageArray(requireContext()))
+        if (rootKey == null) {
+            addPreferencesFromResource(R.xml.engine_preferences)
+            findPreference<ListPreference>("tesseract_language")?.setEntries(
+                viewModel.getLanguageArray(
+                    requireContext()
+                )
+            )
+        }
     }
 }

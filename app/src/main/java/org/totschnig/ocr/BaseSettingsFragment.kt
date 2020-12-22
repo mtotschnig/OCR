@@ -2,14 +2,10 @@ package org.totschnig.ocr
 
 import android.app.Activity
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.AlertDialogLayout
 import androidx.lifecycle.ViewModelProvider
-import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 
@@ -31,6 +27,11 @@ abstract class BaseSettingsFragment : PreferenceFragmentCompat() {
         super.onCreate(savedInstanceState)
     }
 
+    override fun onResume() {
+        super.onResume()
+        requireActivity().title = preferenceScreen.title ?: getString(R.string.app_name)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == TEST_RC && resultCode == Activity.RESULT_OK) {
             data?.data?.let { viewModel.runTextRecognition(it, 0) }
@@ -39,11 +40,15 @@ abstract class BaseSettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.base_preferences, rootKey)
-        findPreference<Preference>("test")?.setOnPreferenceClickListener {
-            val gallIntent = Intent(Intent.ACTION_GET_CONTENT)
-            gallIntent.type = "image/*"
-            startActivityForResult(Intent.createChooser(gallIntent, null), TEST_RC)
-            true
+        if (rootKey == "credits") {
+            addPreferencesFromResource(R.xml.flavor_credits)
+        } else {
+            findPreference<Preference>("test")?.setOnPreferenceClickListener {
+                val gallIntent = Intent(Intent.ACTION_GET_CONTENT)
+                gallIntent.type = "image/*"
+                startActivityForResult(Intent.createChooser(gallIntent, null), TEST_RC)
+                true
+            }
         }
     }
 }
