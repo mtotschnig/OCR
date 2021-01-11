@@ -1,13 +1,15 @@
 package org.totschnig.ocr
 
 import android.app.Activity
-import android.content.Intent
+import android.content.*
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+
 
 const val TEST_RC = 1
 abstract class BaseSettingsFragment : PreferenceFragmentCompat() {
@@ -17,8 +19,14 @@ abstract class BaseSettingsFragment : PreferenceFragmentCompat() {
         viewModel = ViewModelProvider(requireActivity()).get(OcrViewModel::class.java)
         viewModel.getResult().observe(this) { result ->
             result.onSuccess {
+                val text = it.textBlocks.joinToString(separator = "\n") { textBlock ->
+                    textBlock.lines.joinToString(separator = "\n", transform = Line::text)
+                }
                 AlertDialog.Builder(requireContext())
-                    .setMessage(it.textBlocks.map { textBlock -> textBlock.lines.map { line -> line.text }.joinToString(separator = "\n") }.joinToString(separator = "\n"))
+                    .setMessage(text)
+                    .setPositiveButton(R.string.copy_to_clipboard) { _: DialogInterface, _: Int ->
+                        getSystemService(requireContext(), ClipboardManager::class.java)?.setPrimaryClip(ClipData.newPlainText(null, text))
+                    }
                     .create().show()
             }.onFailure {
                 Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
