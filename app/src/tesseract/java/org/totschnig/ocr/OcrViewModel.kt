@@ -12,7 +12,6 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
 import androidx.core.content.ContextCompat
-import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import com.googlecode.tesseract.android.TessBaseAPI
@@ -118,7 +117,7 @@ class OcrViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
-    fun Bitmap.rotate(degrees: Int) =
+    fun Bitmap.rotate(degrees: Int): Bitmap =
         if (degrees == 0) this else Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply { postRotate(degrees.toFloat()) }, true)
 
     private fun filePath(language: String) =
@@ -146,18 +145,19 @@ class OcrViewModel(application: Application) : BaseViewModel(application) {
         getTesseractLanguageDisplayName(context, it)
     }
 
-    fun getLanguageArray(context: Context) =
+    fun getLanguages(context: Context): List<Pair<String, String>> =
         context.resources.getStringArray(R.array.pref_tesseract_language_values)
-            .map { getTesseractLanguageDisplayName(context, it) }
-            .toTypedArray()
+            .map { Pair(it, getTesseractLanguageDisplayName(context, it)) }
+            .sortedBy { it.second }
 
     private fun getTesseractLanguageDisplayName(context: Context, localeString: String): String {
         val localeParts = localeString.split("_")
         val lang = when (localeParts[0]) {
             "kmr" -> "kur"
+            "chi" -> "zho"
             else -> localeParts[0]
         }
-        val localeFromContext = context.resources.getConfiguration().locale
+        val localeFromContext = context.resources.configuration.locale
         return if (localeParts.size == 2) {
             val script = when (localeParts[1]) {
                 "sim" -> "Hans"

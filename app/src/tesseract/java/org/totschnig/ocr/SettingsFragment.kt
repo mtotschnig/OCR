@@ -26,11 +26,11 @@ class SettingsFragment: BaseSettingsFragment(),
         super.onCreatePreferences(savedInstanceState, rootKey)
         if (rootKey == null) {
             addPreferencesFromResource(R.xml.engine_preferences)
-            findPreference<ListPreference>("tesseract_language")?.setEntries(
-                viewModel.getLanguageArray(
-                    requireContext()
-                )
-            )
+            val languages = viewModel.getLanguages(requireContext())
+            findPreference<ListPreference>("tesseract_language")?.let { preference ->
+                preference.entries = languages.map { it.second }.toTypedArray()
+                preference.entryValues = languages.map { it.first }.toTypedArray()
+            }
         }
     }
 }
