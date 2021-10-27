@@ -5,6 +5,7 @@ import Catalano.Imaging.Filters.BradleyLocalThreshold
 import Catalano.Imaging.IApplyInPlace
 import android.app.Application
 import android.app.DownloadManager
+import android.app.DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
@@ -24,6 +25,7 @@ import java.util.*
 const val TESSERACT_DOWNLOAD_FOLDER = "tesseract4/fast/"
 
 class OcrViewModel(application: Application) : BaseViewModel(application) {
+    val prefKey = application.getString(R.string.pref_tesseract_language_key)
 
     val preferences: SharedPreferences
         get() = PreferenceManager.getDefaultSharedPreferences(getApplication())
@@ -103,7 +105,7 @@ class OcrViewModel(application: Application) : BaseViewModel(application) {
                                         lines.add(Line(lineText, lineBoundingRect, elements))
                                     } while (next(TessBaseAPI.PageIteratorLevel.RIL_TEXTLINE))
                                     delete()
-                                    end()
+                                    recycle()
                                     result.postValue(Result.success(Text(listOf(TextBlock(lines)))))
                                 }
                             }
@@ -118,7 +120,15 @@ class OcrViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun Bitmap.rotate(degrees: Int): Bitmap =
-        if (degrees == 0) this else Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply { postRotate(degrees.toFloat()) }, true)
+        if (degrees == 0) this else Bitmap.createBitmap(
+            this,
+            0,
+            0,
+            width,
+            height,
+            Matrix().apply { postRotate(degrees.toFloat()) },
+            true
+        )
 
     private fun filePath(language: String) =
         "${TESSERACT_DOWNLOAD_FOLDER}tessdata/${language}.traineddata"
@@ -130,7 +140,7 @@ class OcrViewModel(application: Application) : BaseViewModel(application) {
     } ?: false
 
     private fun language(): String? {
-        return preferences.getString("tesseract_language", null)
+        return preferences.getString(prefKey, null)
     }
 
     fun downloadTessData(context: Context) = language()?.let {
@@ -138,17 +148,22 @@ class OcrViewModel(application: Application) : BaseViewModel(application) {
             Uri.parse("https://github.com/tesseract-ocr/tessdata_fast/raw/4.0.0/${fileName(it)}")
         ContextCompat.getSystemService(context, DownloadManager::class.java)?.enqueue(
             DownloadManager.Request(uri)
-                .setTitle(context.getString(R.string.pref_tesseract_language_title))
+                .setTitle(
+                    context.getString(R.string.pref_tesseract_language_title) + " : " +
+                            getLanguages(context)[it]
+                )
                 .setDescription(it)
                 .setDestinationInExternalFilesDir(context, null, filePath(it))
+                .setNotificationVisibility(VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
         )
         getTesseractLanguageDisplayName(context, it)
     }
 
-    fun getLanguages(context: Context): List<Pair<String, String>> =
+    fun getLanguages(context: Context): Map<String, String> =
         context.resources.getStringArray(R.array.pref_tesseract_language_values)
-            .map { Pair(it, getTesseractLanguageDisplayName(context, it)) }
+            .map { it to getTesseractLanguageDisplayName(context, it) }
             .sortedBy { it.second }
+            .toMap()
 
     private fun getTesseractLanguageDisplayName(context: Context, localeString: String): String {
         val localeParts = localeString.split("_")

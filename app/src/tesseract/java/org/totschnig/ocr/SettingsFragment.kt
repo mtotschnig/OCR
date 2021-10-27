@@ -17,7 +17,7 @@ class SettingsFragment: BaseSettingsFragment(),
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        if (key == "tesseract_language" && !viewModel.tessDataExists(requireContext())) {
+        if (key == viewModel.prefKey && !viewModel.tessDataExists(requireContext())) {
             viewModel.downloadTessData(requireContext())
         }
     }
@@ -27,9 +27,9 @@ class SettingsFragment: BaseSettingsFragment(),
         if (rootKey == null) {
             addPreferencesFromResource(R.xml.engine_preferences)
             val languages = viewModel.getLanguages(requireContext())
-            findPreference<ListPreference>("tesseract_language")?.let { preference ->
-                preference.entries = languages.map { it.second }.toTypedArray()
-                preference.entryValues = languages.map { it.first }.toTypedArray()
+            findPreference<ListPreference>(viewModel.prefKey)?.let { preference ->
+                preference.entries = languages.values.toTypedArray()
+                preference.entryValues = languages.keys.toTypedArray()
             }
         }
     }

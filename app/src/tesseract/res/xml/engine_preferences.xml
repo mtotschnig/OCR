@@ -2,6 +2,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <ListPreference
         app:useSimpleSummaryProvider="true"
-        android:key="tesseract_language"
+        android:key="@string/pref_tesseract_language_key"
         android:title="@string/pref_tesseract_language_title" />
 </PreferenceScreen>
