@@ -1,0 +1,2 @@
+Upgrade Kotlin version to fix incompatibility with My Expenses
+Upgrade Tesseract4Android to 4.1.1 (Tesseract 5.0.1)
