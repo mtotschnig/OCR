@@ -6,6 +6,7 @@ import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -22,7 +23,7 @@ class OcrViewModel(application: Application) : BaseViewModel(application) {
                     }?.let {
                         InputImage.fromBitmap(it, getOrientation(uri))
                     }?.let {
-                        TextRecognition.getClient().process(it)
+                        TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS).process(it)
                             .addOnSuccessListener { texts ->
                                 result.postValue(Result.success(texts.wrap()))
                             }
