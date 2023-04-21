@@ -8,10 +8,10 @@ import androidx.lifecycle.ViewModelProvider
 
 
 class OCR : ComponentActivity() {
-    lateinit var viewModel: OcrViewModel
+    private lateinit var viewModel: OcrViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(OcrViewModel::class.java)
+        viewModel = ViewModelProvider(this)[OcrViewModel::class.java]
         viewModel.getResult().observe(this) { result ->
             result.onSuccess {
                 setResult(RESULT_OK, Intent().apply {

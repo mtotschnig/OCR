@@ -40,6 +40,7 @@ abstract class BaseSettingsFragment : PreferenceFragmentCompat() {
         requireActivity().title = preferenceScreen.title ?: getString(R.string.app_name)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == TEST_RC && resultCode == Activity.RESULT_OK) {
             data?.data?.let { viewModel.runTextRecognition(it) }

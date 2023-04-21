@@ -19,6 +19,7 @@ import com.googlecode.tesseract.android.TessBaseAPI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.io.File
 import java.util.*
 
@@ -31,10 +32,7 @@ class OcrViewModel(application: Application) : BaseViewModel(application) {
         get() = PreferenceManager.getDefaultSharedPreferences(getApplication())
 
     private fun initialize() {
-        System.loadLibrary("jpeg")
-        System.loadLibrary("png")
-        System.loadLibrary("leptonica")
-        System.loadLibrary("tesseract")
+
     }
 
     fun runTextRecognition(uri: Uri) {
@@ -113,13 +111,14 @@ class OcrViewModel(application: Application) : BaseViewModel(application) {
                         result.postValue(Result.failure(Exception("Unable to open $uri")))
                     }
                 } catch (e: Exception) {
+                    Timber.e(e)
                     result.postValue(Result.failure(e))
                 }
             }
         }
     }
 
-    fun Bitmap.rotate(degrees: Int): Bitmap =
+    private fun Bitmap.rotate(degrees: Int): Bitmap =
         if (degrees == 0) this else Bitmap.createBitmap(
             this,
             0,
