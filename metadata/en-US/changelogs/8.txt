@@ -1,0 +1,2 @@
+Target Android 15 (SDK 35), minimum Android 5 (SDK 21)
+Upgrade Tesseract4Android to 4.7.0  (Tesseract 5.3.4)
