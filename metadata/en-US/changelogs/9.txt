@@ -1,0 +1,1 @@
+Fix Edge-to-edge on Android 15 devices
