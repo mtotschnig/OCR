@@ -1,0 +1,8 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:entryValues="@array/pref_mlkit_script_values"
+        app:useSimpleSummaryProvider="true"
+        android:key="@string/pref_mlkit_script_key"
+        android:title="@string/pref_mlkit_script_title" />
+</PreferenceScreen>

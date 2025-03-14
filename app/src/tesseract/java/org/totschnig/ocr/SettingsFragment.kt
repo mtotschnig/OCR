@@ -25,7 +25,6 @@ class SettingsFragment: BaseSettingsFragment(),
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
         if (rootKey == null) {
-            addPreferencesFromResource(R.xml.engine_preferences)
             val languages = viewModel.getLanguages(requireContext())
             findPreference<ListPreference>(viewModel.prefKey)?.let { preference ->
                 preference.entries = languages.values.toTypedArray()

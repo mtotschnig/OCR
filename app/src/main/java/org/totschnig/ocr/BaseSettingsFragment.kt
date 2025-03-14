@@ -18,7 +18,7 @@ abstract class BaseSettingsFragment : PreferenceFragmentCompat() {
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel = ViewModelProvider(requireActivity()).get(OcrViewModel::class.java)
         viewModel.getResult().observe(this) { result ->
-            result.onSuccess {
+            result?.onSuccess {
                 val text = it.textBlocks.joinToString(separator = "\n") { textBlock ->
                     textBlock.lines.joinToString(separator = "\n", transform = Line::text)
                 }
@@ -26,9 +26,13 @@ abstract class BaseSettingsFragment : PreferenceFragmentCompat() {
                     .setMessage(text)
                     .setPositiveButton(R.string.copy_to_clipboard) { _: DialogInterface, _: Int ->
                         getSystemService(requireContext(), ClipboardManager::class.java)?.setPrimaryClip(ClipData.newPlainText(null, text))
+                        viewModel.clearResult()
+                    }
+                    .setOnDismissListener {
+
                     }
                     .create().show()
-            }.onFailure {
+            }?.onFailure {
                 Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
             }
         }
@@ -52,6 +56,7 @@ abstract class BaseSettingsFragment : PreferenceFragmentCompat() {
         if (rootKey == "credits") {
             addPreferencesFromResource(R.xml.flavor_credits)
         } else {
+            addPreferencesFromResource(R.xml.engine_preferences)
             findPreference<Preference>("test")?.setOnPreferenceClickListener {
                 val gallIntent = Intent(Intent.ACTION_GET_CONTENT)
                 gallIntent.type = "image/*"

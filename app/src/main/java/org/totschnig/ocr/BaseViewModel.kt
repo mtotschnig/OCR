@@ -8,8 +8,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
 open class BaseViewModel(application: Application) : AndroidViewModel(application) {
-    protected val result = MutableLiveData<Result<Text>>()
-    fun getResult(): LiveData<Result<Text>> = result
+
+    protected val result = MutableLiveData<Result<Text>?>()
+
+    fun getResult(): LiveData<Result<Text>?> = result
+
     fun getOrientation(uri: Uri) =
         when (getApplication<Application>().contentResolver.openInputStream(uri)
             ?.use { inputStream ->
@@ -24,4 +27,8 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
             ExifInterface.ORIENTATION_ROTATE_270 -> 270
             else -> 0
         }
+
+    fun clearResult() {
+        result.postValue(null)
+    }
 }

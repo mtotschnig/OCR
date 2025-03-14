@@ -22,6 +22,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
 import java.util.*
+import androidx.core.net.toUri
 
 const val TESSERACT_DOWNLOAD_FOLDER = "tesseract4/fast/"
 
@@ -31,10 +32,6 @@ class OcrViewModel(application: Application) : BaseViewModel(application) {
     val preferences: SharedPreferences
         get() = PreferenceManager.getDefaultSharedPreferences(getApplication())
 
-    private fun initialize() {
-
-    }
-
     fun runTextRecognition(uri: Uri) {
         viewModelScope.launch {
             withContext(Dispatchers.Default) {
@@ -43,7 +40,7 @@ class OcrViewModel(application: Application) : BaseViewModel(application) {
                     if (!tessDataExists(application)) {
                         throw IllegalStateException(application.getString(R.string.configuration_pending))
                     }
-                    initialize()
+
                     application.contentResolver.openInputStream(uri)
                         ?.use { inputStream ->
                             BitmapFactory.decodeStream(
@@ -136,7 +133,7 @@ class OcrViewModel(application: Application) : BaseViewModel(application) {
 
     fun tessDataExists(context: Context): Boolean = language()?.let {
         File(context.getExternalFilesDir(null), filePath(it)).exists()
-    } ?: false
+    } == true
 
     private fun language(): String? {
         return preferences.getString(prefKey, null)
@@ -144,7 +141,7 @@ class OcrViewModel(application: Application) : BaseViewModel(application) {
 
     fun downloadTessData(context: Context) = language()?.let {
         val uri =
-            Uri.parse("https://github.com/tesseract-ocr/tessdata_fast/raw/4.0.0/${fileName(it)}")
+            "https://github.com/tesseract-ocr/tessdata_fast/raw/4.0.0/${fileName(it)}".toUri()
         ContextCompat.getSystemService(context, DownloadManager::class.java)?.enqueue(
             DownloadManager.Request(uri)
                 .setTitle(
@@ -178,13 +175,9 @@ class OcrViewModel(application: Application) : BaseViewModel(application) {
                 "tra" -> "Hant"
                 else -> localeParts[1]
             }
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                Locale.Builder().setLanguage(lang).setScript(script).build().getDisplayName(
-                    localeFromContext
-                )
-            } else {
-                "${Locale(lang).getDisplayName(localeFromContext)} ($script)"
-            }
+            Locale.Builder().setLanguage(lang).setScript(script).build().getDisplayName(
+                localeFromContext
+            )
         } else
             Locale(lang).getDisplayName(localeFromContext)
     }

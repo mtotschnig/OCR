@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">OCR (Ml Kit)</string>
+    <string name="pref_mlkit_script_title">Script</string>
 </resources>

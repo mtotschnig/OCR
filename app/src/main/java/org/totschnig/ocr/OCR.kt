@@ -13,12 +13,12 @@ class OCR : ComponentActivity() {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[OcrViewModel::class.java]
         viewModel.getResult().observe(this) { result ->
-            result.onSuccess {
+            result?.onSuccess {
                 setResult(RESULT_OK, Intent().apply {
                     putExtra("result", it)
                 })
                 finish()
-            }.onFailure {
+            }?.onFailure {
                 abort(it.message ?: "Failure")
             }
         }
