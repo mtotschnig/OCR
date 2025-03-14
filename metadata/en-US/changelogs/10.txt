@@ -1,0 +1,1 @@
+Upgrade Tesseract4Android to 4.8.0  (Tesseract 5.5.0)
